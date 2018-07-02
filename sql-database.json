@@ -66,48 +66,6 @@
 					"description": ""
 			}
         },
-		"metadataAVLibraryCollation": {
-            "type": "String",
-			"defaultValue":"SQL_Latin1_General_CP1_CI_AS",
-			 "metadata": {
-					"description": ""
-			}
-        },
-        "metadataAVLibraryDatabaseName": {
-            "type": "String",
-			"defaultValue":"",
-			 "metadata": {
-					"description": ""
-			}
-        },
-        "metadataAVLibraryTier": {
-            "type": "String",
-			"defaultValue":"Basic",
-			 "metadata": {
-					"description": ""
-			}
-        },
-        "metadataAVLibrarySkuName": {
-            "type": "String",
-			"defaultValue":"Basic",
-			 "metadata": {
-					"description": ""
-			}
-        },       
-        "metadataAVLibraryMaxSizeBytes": {
-            "type": "Int",
-			"defaultValue": 2147483648,
-			 "metadata": {
-					"description": "2147483648"
-			}
-        },
-        "metadataAVLibraryZoneRedundant": {
-            "defaultValue": false,
-            "type": "Bool",
-			 "metadata": {
-					"description": ""
-			}
-        },
         "authAVLibraryStorageKeyType": {
             "type": "String",
 			"defaultValue":"SharedAccessKey",
