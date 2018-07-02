@@ -1,0 +1,202 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+	    "databaseServerName": {
+            "type": "String",
+			"defaultValue":"",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "databaseLogin": {
+            "type": "String",
+			"defaultValue":"",
+			 "metadata": {
+					"description": ""
+			}
+
+        },
+        "databasePassword": {
+            "type": "SecureString",
+			"defaultValue":"",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryCollation": {
+            "type": "String",
+			"defaultValue":"SQL_Latin1_General_CP1_CI_AS",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryDatabaseName": {
+            "type": "String",
+			"defaultValue":"",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryTier": {
+            "type": "String",
+			"defaultValue":"Basic",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibrarySkuName": {
+            "type": "String",
+			"defaultValue":"Basic",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryMaxSizeBytes": {
+            "type": "Int",
+			"defaultValue": 2147483648,
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryZoneRedundant": {
+            "defaultValue": false,
+            "type": "Bool",
+			 "metadata": {
+					"description": ""
+			}
+        },
+		"metadataAVLibraryCollation": {
+            "type": "String",
+			"defaultValue":"SQL_Latin1_General_CP1_CI_AS",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "metadataAVLibraryDatabaseName": {
+            "type": "String",
+			"defaultValue":"",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "metadataAVLibraryTier": {
+            "type": "String",
+			"defaultValue":"Basic",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "metadataAVLibrarySkuName": {
+            "type": "String",
+			"defaultValue":"Basic",
+			 "metadata": {
+					"description": ""
+			}
+        },       
+        "metadataAVLibraryMaxSizeBytes": {
+            "type": "Int",
+			"defaultValue": 2147483648,
+			 "metadata": {
+					"description": "2147483648"
+			}
+        },
+        "metadataAVLibraryZoneRedundant": {
+            "defaultValue": false,
+            "type": "Bool",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryStorageKeyType": {
+            "type": "String",
+			"defaultValue":"SharedAccessKey",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryStorageUri": {
+            "type": "String",
+			"defaultValue":"https://container.blob.core.windows.net/test-database-backup/AuthAVLibrary-2018-5-16-11-46.bacpac",
+			 "metadata": {
+					"description": ""
+			}
+        },
+		"authAVLibraryStorageKey": {
+            "type": "String",
+			"defaultValue":"3KOohOp0bnAkFKHqpTk2F7uNY5GVsJ2kOhLKxYrsNiBpUwZtQN9ARE8vX8z8T5VjQuDqWZBVOb3Zzm+DXkzVkw==",
+			 "metadata": {
+					"description": ""
+			}
+        },
+        "authAVLibraryAuthenticationType": {
+            "defaultValue": "SQL",
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Sql/servers",
+            "name": "[parameters('databaseServerName')]",
+            "apiVersion": "2015-05-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "administratorLogin": "[parameters('databaseLogin')]",
+                "administratorLoginPassword": "[parameters('databasePassword')]",
+                "version": "12.0"
+            },
+            "resources": [
+                {
+                    "type": "databases",
+                    "sku": {
+                        "name": "[parameters('authAVLibrarySkuName')]",
+                        "tier": "[parameters('authAVLibraryTier')]"
+                    },
+                    "name": "[parameters('authAVLibraryDatabaseName')]",
+                    "apiVersion": "2017-10-01-preview",
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "collation": "[parameters('authAVLibraryCollation')]",
+                        "maxSizeBytes": "[parameters('authAVLibraryMaxSizeBytes')]",
+                        "zoneRedundant": "[parameters('authAVLibraryZoneRedundant')]"
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('databaseServerName'))]"
+                    ],
+                    "resources": [
+                        {
+                            "type": "extensions",
+                            "name": "Import",
+                            "apiVersion": "2014-04-01-preview",
+                            "properties": {
+                                "storageKeyType": "[parameters('authAVLibraryStorageKeyType')]",
+                                "storageUri": "[parameters('authAVLibraryStorageUri')]",
+								"storageKey": "[parameters('authAVLibraryStorageKey')]",
+                                "authenticationType": "[parameters('authAVLibraryAuthenticationType')]",
+                                "administratorLogin": "[parameters('databaseLogin')]",
+                                "administratorLoginPassword": "[parameters('databasePassword')]",
+                                "operationMode": "Import"
+                            },
+                            "dependsOn": [
+                                "[concat('Microsoft.Sql/servers/', parameters('databaseServerName'), '/databases/', parameters('authAVLibraryDatabaseName'))]"
+                            ]
+                        }
+                    ]
+                },
+				{
+                    "type": "firewallrules",
+                    "name": "AllowAllWindowsAzureIps",
+                    "apiVersion": "2014-04-01-preview",
+                    "location": "[resourceGroup().location]",
+                    "properties": {
+                        "endIpAddress": "0.0.0.0",
+                        "startIpAddress": "0.0.0.0"
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.Sql/servers/', parameters('databaseServerName'))]"
+                    ]
+                }
+            ]
+        }
+    ]
+}
