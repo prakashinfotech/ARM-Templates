@@ -16,7 +16,7 @@ ARM Template code includes code to create following resources
 
 * Database Server
 * Database (depends on #1 database server)
-*. Firewall rules (depends on #1 database server, and #2 database)
+* Firewall rules (depends on #1 database server, and #2 database)
 
 
 ### Create Azure Sql Database with import bacpac file, and firewall rules to access database
